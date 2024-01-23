@@ -6,16 +6,16 @@ import { Request, Response } from "express";
 // create New Member
 const createMember = asyncHandler(async (req: Request, res: Response) => {
   const resBody = req.body;
-  const email = resBody.email.trim().toLowerCase();
+  const email = resBody.email.toLowerCase();
 
   const userExist = await prisma.member.findUnique({
     where: { email: email },
   });
 
-  if (!userExist) throw new HttpException("User Already Exist.", 400);
+  if (userExist) throw new HttpException("User Already Exist.", 400);
 
   const member = await prisma.member.create({
-    data: { ...resBody, email },
+    data: { ...resBody, email: email },
   });
 
   return res.status(201).json({
@@ -42,10 +42,12 @@ const getAllMember = asyncHandler(async (req: Request, res: Response) => {
 // get Single Member
 const getSingleMember = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
+
   const singleMember = await prisma.member.findUnique({
     where: { id: id },
   });
 
+  if (!singleMember) throw new HttpException("Member Not Found.", 404);
   return res.status(200).json({
     success: true,
     message: "Single Data Fetched Successfully.",
@@ -56,11 +58,14 @@ const getSingleMember = asyncHandler(async (req: Request, res: Response) => {
 // update Member
 const updateMember = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const resBody = req.body;
+  const { name, address, phoneNo, email } = req.body;
+
+  if (email)
+    throw new HttpException("Invalid Fields Passed. Field: email", 400);
 
   await prisma.member.update({
     where: { id: id },
-    data: resBody,
+    data: { name, address, phoneNo },
   });
 
   return res.status(200).json({

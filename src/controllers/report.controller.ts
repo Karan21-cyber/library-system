@@ -7,6 +7,18 @@ const getReport = asyncHandler(async (req: Request, res: Response) => {
     orderBy: {
       createdAt: "desc",
     },
+    select: {
+      id: true,
+      memberborrows: true,
+      bookId: true,
+      book: {
+        select: {
+          id: true,
+          title: true,
+          ISBN: true,
+        },
+      },
+    },
   });
   return res.status(200).json({
     success: true,
@@ -19,6 +31,18 @@ const getSingleReport = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const singleReport = await prisma.report.findUnique({
     where: { id: id },
+    select: {
+      id: true,
+      memberborrows: true,
+      bookId: true,
+      book: {
+        select: {
+          id: true,
+          title: true,
+          ISBN: true,
+        },
+      },
+    },
   });
   return res.status(200).json({
     success: true,
@@ -35,6 +59,18 @@ const getReportByBookId = asyncHandler(async (req: Request, res: Response) => {
     },
     orderBy: {
       createdAt: "desc",
+    },
+    select: {
+      id: true,
+      memberborrows: true,
+      bookId: true,
+      book: {
+        select: {
+          id: true,
+          title: true,
+          ISBN: true,
+        },
+      },
     },
   });
   return res.status(200).json({

@@ -42,6 +42,30 @@ const createNewTransaction = asyncHandler(
       },
     });
 
+    const findreport = await prisma.report.findUnique({
+      where: {
+        bookId: bookId,
+      },
+    });
+
+    if (findreport) {
+      await prisma.report.update({
+        where: {
+          bookId: bookId,
+        },
+        data: {
+          memberborrows: findreport.memberborrows + 1,
+        },
+      });
+    } else {
+      await prisma.report.create({
+        data: {
+          bookId: bookId,
+          memberborrows: 1,
+        },
+      });
+    }
+
     return res.status(201).json({
       success: true,
       message: "Transaction Created Successfully.",
@@ -54,7 +78,7 @@ const updateTransaction = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const resBody = req.body;
 
-  await prisma.transaction.update({
+  const result = await prisma.transaction.update({
     where: { id: id },
     data: {
       ...resBody,
@@ -63,11 +87,53 @@ const updateTransaction = asyncHandler(async (req: Request, res: Response) => {
     },
   });
 
+  const book = await prisma.books.findUnique({
+    where: {
+      id: result.bookId,
+    },
+  });
+
+  if (book) {
+    if (result.status === "returned") {
+      const count: number = book?.quantity + 1;
+      const updateBook = await prisma.books.update({
+        where: {
+          id: book.id,
+        },
+        data: {
+          quantity: count,
+        },
+      });
+    }
+  }
+
   return res.status(200).json({
     success: true,
     message: "Transaction Updated Successfully.",
     data: await prisma.transaction.findUnique({
       where: { id: id },
+      select: {
+        id: true,
+        bookId: true,
+        memberId: true,
+        borrowDate: true,
+        returnDate: true,
+        status: true,
+        Member: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        Book: {
+          select: {
+            id: true,
+            title: true,
+            ISBN: true,
+          },
+        },
+      },
     }),
   });
 });
@@ -76,6 +142,28 @@ const getallTransaction = asyncHandler(async (req: Request, res: Response) => {
   const transactions = await prisma.transaction.findMany({
     orderBy: {
       createdAt: "desc",
+    },
+    select: {
+      id: true,
+      bookId: true,
+      memberId: true,
+      borrowDate: true,
+      returnDate: true,
+      status: true,
+      Member: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      Book: {
+        select: {
+          id: true,
+          title: true,
+          ISBN: true,
+        },
+      },
     },
   });
   return res.status(200).json({
@@ -89,6 +177,28 @@ const singleTransaction = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const singleTransaction = await prisma.transaction.findUnique({
     where: { id: id },
+    select: {
+      id: true,
+      bookId: true,
+      memberId: true,
+      borrowDate: true,
+      returnDate: true,
+      status: true,
+      Member: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+        },
+      },
+      Book: {
+        select: {
+          id: true,
+          title: true,
+          ISBN: true,
+        },
+      },
+    },
   });
 
   return res.status(200).json({
@@ -100,13 +210,35 @@ const singleTransaction = asyncHandler(async (req: Request, res: Response) => {
 
 const getTransactionByBookId = asyncHandler(
   async (req: Request, res: Response) => {
-    const { bookId } = req.params;
+    const { id } = req.params;
     const transactions = await prisma.transaction.findMany({
       where: {
-        bookId: bookId,
+        bookId: id,
       },
       orderBy: {
         createdAt: "desc",
+      },
+      select: {
+        id: true,
+        bookId: true,
+        memberId: true,
+        borrowDate: true,
+        returnDate: true,
+        status: true,
+        Member: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        Book: {
+          select: {
+            id: true,
+            title: true,
+            ISBN: true,
+          },
+        },
       },
     });
     return res.status(200).json({
@@ -119,13 +251,35 @@ const getTransactionByBookId = asyncHandler(
 
 const getTransactionByMemberId = asyncHandler(
   async (req: Request, res: Response) => {
-    const { memberId } = req.params;
+    const { id } = req.params;
     const transactions = await prisma.transaction.findMany({
       where: {
-        memberId: memberId,
+        memberId: id,
       },
       orderBy: {
         createdAt: "desc",
+      },
+      select: {
+        id: true,
+        bookId: true,
+        memberId: true,
+        borrowDate: true,
+        returnDate: true,
+        status: true,
+        Member: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        Book: {
+          select: {
+            id: true,
+            title: true,
+            ISBN: true,
+          },
+        },
       },
     });
     return res.status(200).json({
@@ -145,6 +299,28 @@ const getTransactionByStatus = asyncHandler(
       },
       orderBy: {
         createdAt: "desc",
+      },
+      select: {
+        id: true,
+        bookId: true,
+        memberId: true,
+        borrowDate: true,
+        returnDate: true,
+        status: true,
+        Member: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+        Book: {
+          select: {
+            id: true,
+            title: true,
+            ISBN: true,
+          },
+        },
       },
     });
     return res.status(200).json({

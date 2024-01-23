@@ -51,12 +51,10 @@ model Transaction {
 }
 
 model Report {
-  id              String   @id @default(uuid())
-  bookAvailabilty String
-  populargenre    String[]
-  memberborrows   Int
-  createdAt       DateTime @default(now())
-  updateAt        DateTime @updatedAt
-  book            Books    @relation(fields: [bookId], references: [id])
-  bookId          String   @unique
+  id            String   @id @default(uuid())
+  memberborrows Int
+  book          Books    @relation(fields: [bookId], references: [id])
+  bookId        String   @unique
+  createdAt     DateTime @default(now())
+  updateAt      DateTime @updatedAt
 }

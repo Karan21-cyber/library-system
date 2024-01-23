@@ -28,37 +28,36 @@ model Books {
   author          String[]
   genre           String[]
   publishedOn     String
-  quantity        String
-  availableCopies String
+  quantity        Int
+  availableCopies Int
   selfNo          String?
-  pages           String?
+  pages           Int?
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
-  transaction     Transaction[] 
-  report          Report?       @relation(fields: [reportId], references: [id])
-  reportId        String?
+  transaction     Transaction[]
+  report          Report?
 }
 
 model Transaction {
-  id          String   @id @default(uuid())
-  Member      Member?  @relation(fields: [memberId], references: [id])
-  memberId    String
-  Book        Books   @relation(fields: [bookId], references: [id])
-  bookId      String
-  borrowDate  String
-  returnDate  String
-  status      String
-  borrowCount String
-  createdAt   DateTime @default(now())
-  updateAt    DateTime @updatedAt
+  id         String   @id @default(uuid())
+  Member     Member?  @relation(fields: [memberId], references: [id])
+  memberId   String
+  Book       Books    @relation(fields: [bookId], references: [id])
+  bookId     String
+  borrowDate String?
+  returnDate String?
+  status     String?
+  createdAt  DateTime @default(now())
+  updateAt   DateTime @updatedAt
 }
 
 model Report {
   id              String   @id @default(uuid())
   bookAvailabilty String
-  populargenre    String
-  memberborrows   String
+  populargenre    String[]
+  memberborrows   Int
   createdAt       DateTime @default(now())
   updateAt        DateTime @updatedAt
-  Books           Books[]
+  book            Books    @relation(fields: [bookId], references: [id])
+  bookId          String   @unique
 }

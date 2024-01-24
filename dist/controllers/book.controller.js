@@ -47,14 +47,9 @@ const createNewBook = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0
 // get all books added pagination
 const getAllBooks = (0, asyncHandler_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { limit, page } = req.query;
-    const books = yield prisma_1.default.books.findMany({
-        orderBy: {
+    const books = yield prisma_1.default.books.findMany(Object.assign(Object.assign({ orderBy: {
             createdAt: "desc",
-        },
-        // added pagination
-        take: Number(limit),
-        skip: Number(limit) * (Number(page) - 1),
-    });
+        } }, (limit && { take: Number(limit) })), (limit && page && { skip: Number(limit) * (Number(page) - 1) })));
     return res.status(200).json({
         success: true,
         // added pagination

@@ -54,6 +54,9 @@ app.post("/v1/library/insertBooks", (req, res) => __awaiter(void 0, void 0, void
         data: prisma_1.default.books.findMany(),
     });
 }));
+app.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    return res.send("API is running...");
+}));
 // delete all teh books related to the ISBN in one click
 app.delete("/v1/library/deleteBooks", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield (insertDatainBooks_1.default === null || insertDatainBooks_1.default === void 0 ? void 0 : insertDatainBooks_1.default.map((book) => __awaiter(void 0, void 0, void 0, function* () {
@@ -80,8 +83,8 @@ app.use(error_middleware_1.default);
 prisma_1.default
     .$connect()
     .then(() => {
-    app.listen(5000, () => {
-        console.log("Server started on port 5000.");
+    app.listen(4213, () => {
+        console.log("Server started on port 4213.");
     });
 })
     .catch((err) => {

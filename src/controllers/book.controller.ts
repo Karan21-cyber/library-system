@@ -46,8 +46,8 @@ const getAllBooks = asyncHandler(async (req: Request, res: Response) => {
       createdAt: "desc",
     },
     // added pagination
-    take: Number(limit),
-    skip: Number(limit) * (Number(page) - 1),
+    ...(limit && { take: Number(limit) }),
+    ...(limit && page && { skip: Number(limit) * (Number(page) - 1) }),
   });
 
   return res.status(200).json({

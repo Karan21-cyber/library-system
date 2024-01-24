@@ -47,6 +47,10 @@ app.post("/v1/library/insertBooks", async (req, res) => {
   });
 });
 
+app.get("/", async (req, res) => {
+  return res.send("API is running...");
+});
+
 // delete all teh books related to the ISBN in one click
 app.delete("/v1/library/deleteBooks", async (req, res) => {
   const result = await bookData?.map(async (book) => {
@@ -75,8 +79,8 @@ app.use(errorMiddleware);
 prisma
   .$connect()
   .then(() => {
-    app.listen(5000, () => {
-      console.log("Server started on port 5000.");
+    app.listen(4213, () => {
+      console.log("Server started on port 4213.");
     });
   })
   .catch((err: unknown) => {

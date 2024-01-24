@@ -6,7 +6,7 @@ import HttpException from "../utils/HttpException";
 // create new transaction
 const createNewTransaction = asyncHandler(
   async (req: Request, res: Response) => {
-    const { memberId, bookId, status } = req.body;
+    const { bookId } = req.body;
 
     //fetching the book through book id
     const book = await prisma.books.findUnique({
@@ -26,7 +26,8 @@ const createNewTransaction = asyncHandler(
 
     const count: number = book?.quantity - 1;
 
-    const updateBook = await prisma.books.update({
+    // update the book
+    await prisma.books.update({
       where: {
         id: bookId,
       },
@@ -96,7 +97,7 @@ const updateTransaction = asyncHandler(async (req: Request, res: Response) => {
   if (book) {
     if (result.status === "returned") {
       const count: number = book?.quantity + 1;
-      const updateBook = await prisma.books.update({
+      await prisma.books.update({
         where: {
           id: book.id,
         },

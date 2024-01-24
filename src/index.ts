@@ -7,7 +7,6 @@ import bookRouter from "./routes/book.router";
 import transactionRouter from "./routes/transaction.router";
 import reportRouter from "./routes/report.router";
 import bookData from "./utils/insertDatainBooks";
-import HttpException from "./utils/HttpException";
 
 const app = express();
 app.use(express.json());
@@ -80,6 +79,6 @@ prisma
       console.log("Server started on port 5000.");
     });
   })
-  .catch((err: any) => {
+  .catch((err: unknown) => {
     console.log("Error connecting to database: ", err);
   });

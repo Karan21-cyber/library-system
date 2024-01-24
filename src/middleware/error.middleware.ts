@@ -1,11 +1,10 @@
-import { NextFunction, Request, Response } from "express";
+import {  Request, Response } from "express";
 import HttpException from "../utils/HttpException";
 
 const errorMiddleware = (
   error: HttpException | unknown,
   req: Request,
   res: Response,
-  next: NextFunction
 ) => {
   if (error instanceof HttpException) {
     return res.status(error.statusCode).json({

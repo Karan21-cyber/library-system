@@ -1,5 +1,4 @@
 import { Router } from "express";
-import prisma from "../prisma";
 import reportController from "../controllers/report.controller";
 
 const router = Router();

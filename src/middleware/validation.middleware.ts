@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import { type AnyZodObject } from "zod";
 
@@ -10,11 +11,11 @@ const validationMiddleware = (schema: AnyZodObject) => {
         params: req.params,
       });
       next();
-    } catch (err: any) {
+    } catch (error: any) {
       return res.status(400).json({
         success: false,
-        message: err.issues[0].message,
-        issues: err.issues,
+        message: error.issues[0].message,
+        issues: error.issues,
       });
     }
   };

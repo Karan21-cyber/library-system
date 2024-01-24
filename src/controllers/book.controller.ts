@@ -37,15 +37,27 @@ const createNewBook = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-// get all books
+// get all books added pagination
 const getAllBooks = asyncHandler(async (req: Request, res: Response) => {
+  const { limit, page } = req.query;
+
   const books = await prisma.books.findMany({
     orderBy: {
       createdAt: "desc",
     },
+    // added pagination
+    take: Number(limit),
+    skip: Number(limit) * (Number(page) - 1),
   });
+
   return res.status(200).json({
     success: true,
+    // added pagination
+    docs: {
+      page: Number(page),
+      limit: Number(limit),
+      total: await prisma.books.count(),
+    },
     message: "Data Fetched Successfully.",
     data: books,
   });
